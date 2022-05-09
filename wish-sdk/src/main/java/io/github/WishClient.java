@@ -4,7 +4,6 @@ import io.github.vo.WishToken;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -92,9 +91,9 @@ public abstract class WishClient {
      * @param code         授权码
      * @param redirectUri  重定向地址
      */
-    public ResponseEntity<WishToken> accessToken(String clientId, String clientSecret, String code, String redirectUri) {
+    public WishToken accessToken(String clientId, String clientSecret, String code, String redirectUri) {
         HttpHeaders headers = getBasicHeaders(clientId, clientSecret);
-        return restOperations.exchange(URI.create(String.format("%s/api/v3/oauth/access_token?grant_type=authorization_code&code=%s&redirect_uri=%s", isSandbox() ? SANDBOX_HOST : HOST, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), WishToken.class);
+        return restOperations.exchange(URI.create(String.format("%s/api/v3/oauth/access_token?grant_type=authorization_code&code=%s&redirect_uri=%s", isSandbox() ? SANDBOX_HOST : HOST, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), WishToken.class).getBody();
     }
 
 

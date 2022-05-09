@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Created by EalenXie on 2022/5/7 10:53
+ */
 @NoArgsConstructor
 @Data
-public class StoreInfo {
-
-    @JsonProperty("store_id")
-    private String storeId;
-
-    @JsonProperty("terminal_id")
-    private String terminalId;
+public class ProcessingState {
+    @JsonProperty("status")
+    private String status;
 }

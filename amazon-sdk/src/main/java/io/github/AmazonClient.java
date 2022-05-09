@@ -105,9 +105,10 @@ public class AmazonClient {
      * @param code         授权码
      * @param redirectUri  重定向地址
      */
-    public ResponseEntity<AmazonToken> accessToken(String clientId, String clientSecret, String code, String redirectUri) {
+    public AmazonToken accessToken(String clientId, String clientSecret, String code, String redirectUri) {
         HttpHeaders headers = getBasicHeaders(clientId, clientSecret);
-        return restOperations.exchange(URI.create(String.format("%s?grant_type=authorization_code&code=%s&redirect_uri=%s", TOKEN_URL, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AmazonToken.class);
+        ResponseEntity<AmazonToken> exchange = restOperations.exchange(URI.create(String.format("%s?grant_type=authorization_code&code=%s&redirect_uri=%s", TOKEN_URL, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AmazonToken.class);
+        return exchange.getBody();
     }
 
 
@@ -117,16 +118,16 @@ public class AmazonClient {
      *
      * @param orderId 亚马逊订单ID
      */
-    public ResponseEntity<AmazonResponse<AmazonOrder>> getOrder(String orderId, String nextToken) {
+    public AmazonResponse<AmazonOrder> getOrder(String orderId, String nextToken) {
         return restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s?nextToken=%s", SELLING_PARTNER_HOST, orderId, nextToken)), HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonOrder>>() {
-        });
+        }).getBody();
     }
 
     /**
      * 获取订单列表
      * https://developer-docs.amazon.com/sp-api/docs/orders-api-v0-reference#get-ordersv0orders
      */
-    public ResponseEntity<AmazonResponse<AmazonOrder>> getOrders(OrdersDTO dto) {
+    public AmazonResponse<AmazonOrder> getOrders(OrdersDTO dto) {
         @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/orders/v0/orders", SELLING_PARTNER_HOST));
         LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
@@ -134,7 +135,7 @@ public class AmazonClient {
         builder.queryParams(req);
         URI uri = builder.build().encode().toUri();
         return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonOrder>>() {
-        });
+        }).getBody();
     }
 
     /**
@@ -143,9 +144,9 @@ public class AmazonClient {
      *
      * @param orderId 亚马逊订单ID
      */
-    public ResponseEntity<AmazonResponse<AmazonBuyerInfo>> orderBuyerInfo(String orderId, String nextToken) {
+    public AmazonResponse<AmazonBuyerInfo> orderBuyerInfo(String orderId, String nextToken) {
         return restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s/buyerInfo?nextToken=%s", SELLING_PARTNER_HOST, orderId, nextToken)), HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonBuyerInfo>>() {
-        });
+        }).getBody();
     }
 
     /**
@@ -154,18 +155,18 @@ public class AmazonClient {
      *
      * @param orderId 亚马逊订单ID
      */
-    public ResponseEntity<AmazonResponse<AmazonShippingAddress>> orderAddress(String orderId, String nextToken) {
+    public AmazonResponse<AmazonShippingAddress> orderAddress(String orderId, String nextToken) {
         return restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s/address?nextToken=%s", SELLING_PARTNER_HOST, orderId, nextToken)), HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonShippingAddress>>() {
-        });
+        }).getBody();
     }
 
     /**
      * 获取订单Item列表
      * https://developer-docs.amazon.com/sp-api/docs/orders-api-v0-reference#get-ordersv0ordersorderidorderitems
      */
-    public ResponseEntity<AmazonResponse<AmazonOrderItems>> getOrderItems(String orderId, String nextToken) {
+    public AmazonResponse<AmazonOrderItems> getOrderItems(String orderId, String nextToken) {
         return restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s/orderItems?nextToken=%s", SELLING_PARTNER_HOST, orderId, nextToken)), HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonOrderItems>>() {
-        });
+        }).getBody();
     }
 
 
@@ -173,11 +174,11 @@ public class AmazonClient {
      * 更新发货状态
      * https://developer-docs.amazon.com/sp-api/docs/orders-api-v0-reference#post-ordersv0ordersorderidshipment
      */
-    public ResponseEntity<Void> shipment(String orderId, String nextToken, ShipmentDTO dto) {
+    public void shipment(String orderId, String nextToken, ShipmentDTO dto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<ShipmentDTO> httpEntity = new HttpEntity<>(dto, headers);
-        return restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s/shipment?nextToken=%s", SELLING_PARTNER_HOST, orderId, nextToken)), HttpMethod.POST, httpEntity, Void.class);
+        restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s/shipment?nextToken=%s", SELLING_PARTNER_HOST, orderId, nextToken)), HttpMethod.POST, httpEntity, Void.class);
     }
 
 }

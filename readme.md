@@ -12,3 +12,5 @@ walmart: https://developer.walmart.com/
 
 shopee: https://open.shopee.com/
 
+PayPal: https://developer.paypal.com/
+

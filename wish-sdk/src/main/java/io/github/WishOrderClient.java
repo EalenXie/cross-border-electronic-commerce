@@ -6,7 +6,10 @@ import io.github.vo.NameVO;
 import io.github.vo.WishDownloadJob;
 import io.github.vo.WishOrder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
@@ -45,9 +48,9 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishOrder} 订单详情
      */
-    public ResponseEntity<WishOrder> getOrder(String orderId, String accessToken) {
+    public WishOrder getOrder(String orderId, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(URI.create(String.format("%s/api/v3/orders/%s", isSandbox() ? SANDBOX_HOST : HOST, orderId)), HttpMethod.GET, new HttpEntity<>(null, headers), WishOrder.class);
+        return getRestOperations().exchange(URI.create(String.format("%s/api/v3/orders/%s", isSandbox() ? SANDBOX_HOST : HOST, orderId)), HttpMethod.GET, new HttpEntity<>(null, headers), WishOrder.class).getBody();
     }
 
     /**
@@ -58,12 +61,12 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishOrder} 订单详情
      */
-    public ResponseEntity<List<WishOrder>> getOrders(OrdersDTO dto, String accessToken) {
+    public List<WishOrder> getOrders(OrdersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         LinkedMultiValueMap<String, String> req = queryParam(dto);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v3/orders", isSandbox() ? SANDBOX_HOST : HOST)).queryParams(req);
         return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<WishOrder>>() {
-        });
+        }).getBody();
     }
 
     public LinkedMultiValueMap<String, String> queryParam(Object dto) {
@@ -82,12 +85,12 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link NameVO} 物流公司
      */
-    public ResponseEntity<List<NameVO>> shippingCarriers(ShippingCarriersDTO dto, String accessToken) {
+    public List<NameVO> shippingCarriers(ShippingCarriersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         LinkedMultiValueMap<String, String> req = queryParam(dto);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v3/shipping_carriers", isSandbox() ? SANDBOX_HOST : HOST)).queryParams(req);
         return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<NameVO>>() {
-        });
+        }).getBody();
     }
 
 
@@ -99,11 +102,11 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishDownloadJob} 订单下载信息
      */
-    public ResponseEntity<WishDownloadJob> batchDownloadOrders(OrdersDTO dto, String accessToken) {
+    public WishDownloadJob batchDownloadOrders(OrdersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         LinkedMultiValueMap<String, String> req = queryParam(dto);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v3/bulk_get", isSandbox() ? SANDBOX_HOST : HOST)).queryParams(req);
-        return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.POST, new HttpEntity<>(null, headers), WishDownloadJob.class);
+        return getRestOperations().exchange(builder.build().encode().toUri(), HttpMethod.POST, new HttpEntity<>(null, headers), WishDownloadJob.class).getBody();
     }
 
 
@@ -114,9 +117,9 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishDownloadJob} 订单下载信息
      */
-    public ResponseEntity<WishDownloadJob> batchDownloadJobStatus(String jobId, String accessToken) {
+    public WishDownloadJob batchDownloadJobStatus(String jobId, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(String.format("%s/api/v3/bulk_get/%s", isSandbox() ? SANDBOX_HOST : HOST, jobId), HttpMethod.GET, new HttpEntity<>(null, headers), WishDownloadJob.class);
+        return getRestOperations().exchange(String.format("%s/api/v3/bulk_get/%s", isSandbox() ? SANDBOX_HOST : HOST, jobId), HttpMethod.GET, new HttpEntity<>(null, headers), WishDownloadJob.class).getBody();
     }
 
     /**
@@ -128,11 +131,11 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishOrder} 发货返回信息
      */
-    public ResponseEntity<WishOrder> shipOrUpdateTracking(String orderId, TrackingDTO dto, String accessToken) {
+    public WishOrder shipOrUpdateTracking(String orderId, TrackingDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<TrackingDTO> httpEntity = new HttpEntity<>(dto, headers);
-        return getRestOperations().exchange(String.format("%s/api/v3/orders/%s/tracking", isSandbox() ? SANDBOX_HOST : HOST, orderId), HttpMethod.PUT, httpEntity, WishOrder.class);
+        return getRestOperations().exchange(String.format("%s/api/v3/orders/%s/tracking", isSandbox() ? SANDBOX_HOST : HOST, orderId), HttpMethod.PUT, httpEntity, WishOrder.class).getBody();
     }
 
     /**
@@ -142,10 +145,10 @@ public class WishOrderClient extends WishClient {
      * @param orderId     订单id
      * @param accessToken 令牌
      */
-    public ResponseEntity<List<String>> refundReasons(String orderId, String accessToken) {
+    public List<String> refundReasons(String orderId, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         return getRestOperations().exchange(String.format("%s/api/v3/orders/%s/refund_reasons", isSandbox() ? SANDBOX_HOST : HOST, orderId), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<String>>() {
-        });
+        }).getBody();
     }
 
     /**
@@ -157,10 +160,10 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishOrder} 取消订单返回结果
      */
-    public ResponseEntity<WishOrder> refund(String orderId, RefundDTO dto, String accessToken) {
+    public WishOrder refund(String orderId, RefundDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return getRestOperations().exchange(String.format("%s/api/v3/orders/%s/refund", isSandbox() ? SANDBOX_HOST : HOST, orderId), HttpMethod.PUT, new HttpEntity<>(dto, headers), WishOrder.class);
+        return getRestOperations().exchange(String.format("%s/api/v3/orders/%s/refund", isSandbox() ? SANDBOX_HOST : HOST, orderId), HttpMethod.PUT, new HttpEntity<>(dto, headers), WishOrder.class).getBody();
     }
 
 
@@ -172,9 +175,9 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishOrder} 订单返回信息
      */
-    public ResponseEntity<WishOrder> updateLTLOrder(String orderId, UpdateLtlDTO dto, String accessToken) {
+    public WishOrder updateLTLOrder(String orderId, UpdateLtlDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(URI.create(String.format("%s/api/v3/orders/%s", isSandbox() ? SANDBOX_HOST : HOST, orderId)), HttpMethod.PUT, new HttpEntity<>(dto, headers), WishOrder.class);
+        return getRestOperations().exchange(URI.create(String.format("%s/api/v3/orders/%s", isSandbox() ? SANDBOX_HOST : HOST, orderId)), HttpMethod.PUT, new HttpEntity<>(dto, headers), WishOrder.class).getBody();
     }
 
     /**
@@ -185,9 +188,9 @@ public class WishOrderClient extends WishClient {
      * @param accessToken 令牌
      * @return {@link WishOrder} 订单返回信息
      */
-    public ResponseEntity<WishOrder> modifyAddress(String orderId, ModifyAddressDTO dto, String accessToken) {
+    public WishOrder modifyAddress(String orderId, ModifyAddressDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        return getRestOperations().exchange(URI.create(String.format("%s/api/v3/orders/%s/address", isSandbox() ? SANDBOX_HOST : HOST, orderId)), HttpMethod.PUT, new HttpEntity<>(dto, headers), WishOrder.class);
+        return getRestOperations().exchange(URI.create(String.format("%s/api/v3/orders/%s/address", isSandbox() ? SANDBOX_HOST : HOST, orderId)), HttpMethod.PUT, new HttpEntity<>(dto, headers), WishOrder.class).getBody();
     }
 
 }

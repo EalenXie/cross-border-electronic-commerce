@@ -5,14 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author 小小怪下士
- * @version 1.0.0
+ * Created by EalenXie on 2022/5/7 10:53
  */
 @NoArgsConstructor
 @Data
-public class Email {
+public class PayoutAmount {
+    @JsonProperty("currency_code")
+    private String currencyCode;
     @JsonProperty("value")
     private String value;
-    @JsonProperty("primary")
-    private Boolean primary;
 }

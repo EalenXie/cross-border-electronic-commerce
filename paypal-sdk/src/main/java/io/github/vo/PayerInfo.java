@@ -20,6 +20,9 @@ public class PayerInfo {
     @JsonProperty("email_address")
     private String emailAddress;
 
+    @JsonProperty("phone_number")
+    private PhoneNumber phoneNumber;
+
     /**
      * 付款人的地址状态。值是：
      * Y. 已验证。
@@ -46,4 +49,12 @@ public class PayerInfo {
      */
     @JsonProperty("country_code")
     private String countryCode;
+
+    /**
+     * 买家地址
+     */
+    @JsonProperty("address")
+    private PayerAddress address;
+
+
 }

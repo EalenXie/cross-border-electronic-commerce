@@ -75,10 +75,10 @@ public abstract class WalmartClient {
      *
      * @return 访问令牌
      */
-    public ResponseEntity<WalmartToken> accessToken() {
+    public WalmartToken accessToken() {
         HttpHeaders headers = getCommonHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return getRestOperations().exchange(URI.create(String.format("%s/v3/token?grant_type=client_credentials", isSandBoxMode() ? SANDBOX_HOST : HOST)), HttpMethod.POST, new HttpEntity<>(null, headers), WalmartToken.class);
+        return getRestOperations().exchange(URI.create(String.format("%s/v3/token?grant_type=client_credentials", isSandBoxMode() ? SANDBOX_HOST : HOST)), HttpMethod.POST, new HttpEntity<>(null, headers), WalmartToken.class).getBody();
     }
 
     /**

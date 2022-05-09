@@ -48,4 +48,5 @@ public class TransactionDetails {
      */
     @JsonProperty("incentive_info")
     private IncentiveInfo incentiveInfo;
+
 }

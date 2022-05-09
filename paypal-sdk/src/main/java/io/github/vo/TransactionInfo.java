@@ -20,6 +20,15 @@ public class TransactionInfo {
     private String transactionId;
 
     /**
+     * 原单订单交易号
+     */
+    @JsonProperty("paypal_reference_id")
+    private String paypalReferenceId;
+
+    @JsonProperty("paypal_reference_id_type")
+    private String paypalReferenceIdType;
+
+    /**
      * 个五位数的交易事件代码，根据资金流动和借记或贷记对交易类型进行分类
      * https://developer.paypal.com/docs/transaction-search/transaction-event-codes/
      */
@@ -38,6 +47,7 @@ public class TransactionInfo {
     @JsonProperty("transaction_updated_date")
     private String transactionUpdatedDate;
 
+
     /**
      * 通过 PayPal 在发送方和接收方之间转移的全包交易总额。
      */
@@ -51,10 +61,22 @@ public class TransactionInfo {
     private TransactionAmount feeAmount;
 
     /**
+     * 折扣金额
+     */
+    @JsonProperty("discount_amount")
+    private TransactionAmount discountAmount;
+
+    /**
      * 一笔保险费。保证产品的质量或交付。
      */
     @JsonProperty("insurance_amount")
     private TransactionAmount insuranceAmount;
+
+    /**
+     * 销售税额
+     */
+    @JsonProperty("sales_tax_amount")
+    private TransactionAmount salesTaxAmount;
 
     /**
      * PayPal 或商家报告的交易运费。
@@ -63,10 +85,21 @@ public class TransactionInfo {
     private TransactionAmount shippingAmount;
 
     /**
-     * 运费折扣。
+     * 运费折扣金额
      */
     @JsonProperty("shipping_discount_amount")
     private TransactionAmount shippingDiscountAmount;
+
+
+    @JsonProperty("shipping_tax_amount")
+    private TransactionAmount shippingTaxAmount;
+
+
+    @JsonProperty("other_amount")
+    private TransactionAmount otherAmount;
+
+    @JsonProperty("tip_amount")
+    private TransactionAmount tipAmount;
 
     /**
      * 交易状态的代码
@@ -90,6 +123,20 @@ public class TransactionInfo {
     @JsonProperty("transaction_note")
     private String transactionNote;
 
+
+    @JsonProperty("payment_tracking_id")
+    private String paymentTrackingId;
+
+    @JsonProperty("bank_reference_id")
+    private String bankReferenceId;
+
+
+    @JsonProperty("ending_balance")
+    private TransactionAmount endingBalance;
+
+    @JsonProperty("available_balance")
+    private TransactionAmount availableBalance;
+
     /**
      * 商家随交易发送的发票 ID。
      * 注意：如果发票 ID 与请款请求一起发送，则会报告该值。否则，上报授权交易的发票编号。
@@ -112,4 +159,27 @@ public class TransactionInfo {
      */
     @JsonProperty("protection_eligibility")
     private String protectionEligibility;
+
+
+    @JsonProperty("credit_term")
+    private String creditTerm;
+
+    @JsonProperty("credit_transactional_fee")
+    private TransactionAmount creditTransactionalFee;
+
+    @JsonProperty("credit_promotional_fee")
+    private TransactionAmount creditPromotionalFee;
+
+    @JsonProperty("annual_percentage_rate")
+    private String annualPercentageRate;
+
+    @JsonProperty("payment_method_type")
+    private String paymentMethodType;
+
+    @JsonProperty("instrument_type")
+    private String instrumentType;
+
+    @JsonProperty("instrument_sub_type")
+    private String instrumentSubType;
+
 }

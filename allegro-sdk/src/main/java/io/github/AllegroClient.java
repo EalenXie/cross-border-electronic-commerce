@@ -4,7 +4,6 @@ import io.github.vo.AllegroToken;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestOperations;
 
 import java.net.URI;
@@ -12,7 +11,6 @@ import java.net.URI;
 /**
  * Created by EalenXie on 2022/3/18 12:57
  * https://developer.allegro.pl/documentation/#section/Authentication
- *
  */
 public abstract class AllegroClient {
 
@@ -101,9 +99,9 @@ public abstract class AllegroClient {
      * @param code         授权码
      * @param redirectUri  重定向地址
      */
-    public ResponseEntity<AllegroToken> accessToken(String clientId, String clientSecret, String code, String redirectUri) {
+    public AllegroToken accessToken(String clientId, String clientSecret, String code, String redirectUri) {
         HttpHeaders headers = getBasicHeaders(clientId, clientSecret);
-        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=authorization_code&code=%s&redirect_uri=%s", isSandBox() ? AUTH_SANDBOX_HOST : AUTH_HOST, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class);
+        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=authorization_code&code=%s&redirect_uri=%s", isSandBox() ? AUTH_SANDBOX_HOST : AUTH_HOST, code, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class).getBody();
     }
 
     /**
@@ -114,9 +112,9 @@ public abstract class AllegroClient {
      * @param refreshToken 刷新令牌
      * @param redirectUri  重定向地址
      */
-    public ResponseEntity<AllegroToken> refreshToken(String clientId, String clientSecret, String refreshToken, String redirectUri) {
+    public AllegroToken refreshToken(String clientId, String clientSecret, String refreshToken, String redirectUri) {
         HttpHeaders headers = getBasicHeaders(clientId, clientSecret);
-        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=refresh_token&refresh_token=%s&redirect_uri=%s", isSandBox() ? AUTH_SANDBOX_HOST : AUTH_HOST, refreshToken, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class);
+        return restOperations.exchange(URI.create(String.format("%s/auth/oauth/token?grant_type=refresh_token&refresh_token=%s&redirect_uri=%s", isSandBox() ? AUTH_SANDBOX_HOST : AUTH_HOST, refreshToken, redirectUri)), HttpMethod.POST, new HttpEntity<>(null, headers), AllegroToken.class).getBody();
     }
 
 

@@ -2,11 +2,9 @@ package io.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.dto.BalancesDTO;
 import io.github.dto.TransactionsDTO;
-import io.github.vo.BalancesVO;
-import io.github.vo.PayPalAccessToken;
-import io.github.vo.TransactionDetailsVO;
-import io.github.vo.UserInfo;
+import io.github.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -34,13 +32,13 @@ public class PayPalClient {
      */
     private boolean sandBox = true;
     /**
+     * 正式环境接口地址
+     */
+    private static final String HOST = "https://api-m.paypal.com/v1";
+    /**
      * 沙箱环境认证接口地址
      */
     private static final String HOST_SANDBOX = "https://api-m.sandbox.paypal.com/v1";
-    /**
-     * 正式环境接口地址
-     */
-    private static final String HOST = "https://api-m.paypal.com";
 
 
     public PayPalClient() {
@@ -81,14 +79,15 @@ public class PayPalClient {
      * @param accountId   账号id
      * @param dto         请求参数
      */
-    public ResponseEntity<PayPalAccessToken> clientCredentialsAcessToken(String clientId, String clientSecret) {
+    public PayPalAccessToken clientCredentialsAcessToken(String clientId, String clientSecret) {
         HttpHeaders headers = getBasicHeader(clientId, clientSecret);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Accept-Language", "en_US");
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/oauth2/token", sandBox ? HOST_SANDBOX : HOST));
         builder.queryParam("grant_type", "client_credentials");
         URI uri = builder.build().encode().toUri();
-        return restOperations.exchange(uri, HttpMethod.POST, new HttpEntity<>(null, headers), PayPalAccessToken.class);
+        return restOperations.exchange(uri, HttpMethod.POST, new HttpEntity<>(null, headers), PayPalAccessToken.class).getBody();
     }
 
     /**
@@ -100,14 +99,14 @@ public class PayPalClient {
      * @param payoutsItemId
      * @return
      */
-    public ResponseEntity<?> clientReferencedPayoutsItems(String payoutsItemId, String token) {
+    public ReferencedPayoutsItems clientReferencedPayoutsItems(String payoutsItemId, String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
+        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         headers.set("PayPal-Partner-Attribution-Id", "bn1234");
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/payments/referenced-payouts-items/%s", sandBox ? HOST_SANDBOX : HOST, payoutsItemId));
         URI uri = builder.build().encode().toUri();
-        return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, headers), Object.class);
+        return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, headers), ReferencedPayoutsItems.class).getBody();
     }
 
     /**
@@ -119,12 +118,12 @@ public class PayPalClient {
      * @param payoutsItemId
      * @return
      */
-    public ResponseEntity<UserInfo> getUserInfo(String token) {
+    public UserInfo getUserInfo(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/identity/oauth2/userinfo?schema=paypalv1.1", sandBox ? HOST_SANDBOX : HOST));
-        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), UserInfo.class);
+        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), UserInfo.class).getBody();
     }
 
 
@@ -136,50 +135,43 @@ public class PayPalClient {
      * @param dto   请求参数封装的对象TransactionsDTO
      * @return
      */
-    public ResponseEntity<TransactionDetailsVO> transactions(String token, TransactionsDTO dto) {
+    public TransactionDetailsVO transactions(String token, TransactionsDTO dto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         //访问路径
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/reporting/transactions", sandBox ? HOST_SANDBOX : HOST));
-        //判断dto不能为空
-        if (dto != null) {
-            @SuppressWarnings("unchecked") SortedMap<String, String> sortedMap = mapper.convertValue(dto, SortedMap.class);
-            LinkedMultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-            if (!sortedMap.isEmpty()) {
-                queryParams.setAll(sortedMap);
-                builder.queryParams(queryParams);
-            }
+        //将请求参数按指定排序生成url参数
+        @SuppressWarnings("unchecked") SortedMap<String, String> sortedMap = mapper.convertValue(dto, SortedMap.class);
+        LinkedMultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        if (!sortedMap.isEmpty()) {
+            queryParams.setAll(sortedMap);
+            builder.queryParams(queryParams);
         }
-        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), TransactionDetailsVO.class);
+        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), TransactionDetailsVO.class).getBody();
     }
 
     /**
      * 列出所有余额
-     * https://developer.paypal.com/docs/api/transaction-search/v1/#transactions_get
+     * https://developer.paypal.com/docs/api/transaction-search/v1/#balances_get
      *
-     * @param token                   访问令牌
-     * @param currencCode             通过PayPal 交易货币的三字符 ISO-4217 货币代码过滤响应中的交易。
-     * @param dasOfTimeto             在提供的日期时间在响应中列出余额，如果未提供，将返回系统中最后刷新的余额
-     * @param includeCryptoCurrencies 是否包括加密货币：false   或   true
+     * @param token 访问令牌
+     * @param dto   请求参数对象
      * @return
      */
-    public ResponseEntity<BalancesVO> balances(String token, String currencCode, String asOfTime, String includeCryptoCurrencies) {
+    public BalancesVO balances(String token, BalancesDTO dto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
         //访问路径
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/reporting/balances", sandBox ? HOST_SANDBOX : HOST));
-        //判断入参不能为空
-        if (asOfTime != null && currencCode != null) {
-            //将请求参数按指定排序生成url参数
-            LinkedMultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-            queryParams.put("currency_code", Collections.singletonList(currencCode));
-            queryParams.put("as_of_time", Collections.singletonList(asOfTime));
-            queryParams.put("include_crypto_currencies", Collections.singletonList(includeCryptoCurrencies));
+        @SuppressWarnings("unchecked") SortedMap<String, String> sortedMap = mapper.convertValue(dto, SortedMap.class);
+        LinkedMultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        if (!sortedMap.isEmpty()) {
+            queryParams.setAll(sortedMap);
             builder.queryParams(queryParams);
         }
-        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), BalancesVO.class);
+        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), BalancesVO.class).getBody();
     }
 
 
