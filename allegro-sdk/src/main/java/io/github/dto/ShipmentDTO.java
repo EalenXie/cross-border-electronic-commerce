@@ -1,7 +1,6 @@
 package io.github.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,11 +23,5 @@ public class ShipmentDTO {
     @JsonProperty("lineItems")
     private List<LineItems> lineItems;
 
-    @NoArgsConstructor
-    @Data
-    @AllArgsConstructor
-    public static class LineItems {
-        @JsonProperty("id")
-        private String id;
-    }
+
 }

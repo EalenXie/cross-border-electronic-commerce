@@ -213,112 +213,8 @@ public class AmazonOrder {
     @JsonProperty("AutomatedShippingSettings")
     private AutomatedShippingSettings automatedShippingSettings;
 
-    @NoArgsConstructor
-    @Data
-    public static class OrderTotal {
-        @JsonProperty("CurrencyCode")
-        private String currencyCode;
-        @JsonProperty("Amount")
-        private String amount;
-    }
 
-    @NoArgsConstructor
-    @Data
-    public static class DefaultShipFromLocationAddress {
-        @JsonProperty("Name")
-        private String name;
-        @JsonProperty("AddressLine1")
-        private String addressLine1;
-        @JsonProperty("AddressLine2")
-        private String addressLine2;
-        @JsonProperty("AddressLine3")
-        private String addressLine3;
-        @JsonProperty("City")
-        private String city;
-        @JsonProperty("County")
-        private String county;
-        @JsonProperty("District")
-        private String district;
-        @JsonProperty("StateOrRegion")
-        private String stateOrRegion;
-        @JsonProperty("Municipality")
-        private String municipality;
-        @JsonProperty("PostalCode")
-        private String postalCode;
-        @JsonProperty("CountryCode")
-        private String countryCode;
-        @JsonProperty("Phone")
-        private String phone;
-        @JsonProperty("AddressType")
-        private String addressType;
-    }
 
-    @NoArgsConstructor
-    @Data
-    public static class BuyerTaxInformation {
-        @JsonProperty("BuyerLegalCompanyName")
-        private String buyerLegalCompanyName;
-        @JsonProperty("BuyerBusinessAddress")
-        private String buyerBusinessAddress;
-        @JsonProperty("BuyerTaxRegistrationId")
-        private String buyerTaxRegistrationId;
-        @JsonProperty("BuyerTaxOffice")
-        private String buyerTaxOffice;
-    }
-
-    @NoArgsConstructor
-    @Data
-    public static class FulfillmentInstruction {
-        @JsonProperty("FulfillmentSupplySourceId")
-        private String fulfillmentSupplySourceId;
-    }
-
-    @NoArgsConstructor
-    @Data
-    public static class MarketplaceTaxInfo {
-        @JsonProperty("TaxClassifications")
-        private List<TaxClassifications> taxClassifications;
-
-        @NoArgsConstructor
-        @Data
-        public static class TaxClassifications {
-            @JsonProperty("Name")
-            private String name;
-            @JsonProperty("Value")
-            private String value;
-        }
-    }
-
-    @NoArgsConstructor
-    @Data
-    public static class ShippingAddress {
-        @JsonProperty("Name")
-        private String name;
-        @JsonProperty("AddressLine1")
-        private String addressLine1;
-        @JsonProperty("AddressLine2")
-        private String addressLine2;
-        @JsonProperty("AddressLine3")
-        private String addressLine3;
-        @JsonProperty("City")
-        private String city;
-        @JsonProperty("County")
-        private String county;
-        @JsonProperty("District")
-        private String district;
-        @JsonProperty("StateOrRegion")
-        private String stateOrRegion;
-        @JsonProperty("Municipality")
-        private String municipality;
-        @JsonProperty("PostalCode")
-        private String postalCode;
-        @JsonProperty("CountryCode")
-        private String countryCode;
-        @JsonProperty("Phone")
-        private String phone;
-        @JsonProperty("AddressType")
-        private String addressType;
-    }
 
     @NoArgsConstructor
     @Data
@@ -342,16 +238,8 @@ public class AmazonOrder {
             @JsonProperty("TaxingRegion")
             private String taxingRegion;
             @JsonProperty("TaxClassifications")
-            private List<TaxClassifications> taxClassifications;
+            private List<TaxClassification> taxClassifications;
 
-            @NoArgsConstructor
-            @Data
-            public static class TaxClassifications {
-                @JsonProperty("Name")
-                private String name;
-                @JsonProperty("Value")
-                private String value;
-            }
         }
     }
 

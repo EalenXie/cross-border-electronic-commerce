@@ -16,11 +16,4 @@ public class FulfillmentDTO {
     private String status;
     @JsonProperty("shipmentSummary")
     private ShipmentSummary shipmentSummary;
-
-    @NoArgsConstructor
-    @Data
-    public static class ShipmentSummary {
-        @JsonProperty("lineItemsSent")
-        private String lineItemsSent;
-    }
 }

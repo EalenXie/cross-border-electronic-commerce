@@ -21,12 +21,5 @@ public class ShipmentDTO {
     @JsonProperty("orderItems")
     private List<OrderItem> orderItems;
 
-    @NoArgsConstructor
-    @Data
-    public static class OrderItem {
-        @JsonProperty("orderItemId")
-        private String orderItemId;
-        @JsonProperty("quantity")
-        private Integer quantity;
-    }
+
 }

@@ -13,14 +13,8 @@ public class InvoicesDTO {
 
 
     @JsonProperty("file")
-    private File file;
+    private FileDTO file;
     @JsonProperty("invoiceNumber")
     private String invoiceNumber;
 
-    @NoArgsConstructor
-    @Data
-    public static class File {
-        @JsonProperty("name")
-        private String name;
-    }
 }
