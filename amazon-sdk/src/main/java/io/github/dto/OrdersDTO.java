@@ -29,11 +29,9 @@ public class OrdersDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("OrderStatuses")
     private String[] orderStatuses;
-
     @NonNull
     @JsonProperty("MarketplaceIds")
     private String[] marketplaceIds;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("FulfillmentChannels")
     private String[] fulfillmentChannels;
@@ -48,14 +46,12 @@ public class OrdersDTO {
     private String sellerOrderId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("MaxResultsPerPage")
-    private Integer maxResultsPerPage;
+    private String maxResultsPerPage;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("EasyShipShipmentStatuses")
     private String[] easyShipShipmentStatuses;
-
     @JsonProperty("NextToken")
     private String nextToken;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("AmazonOrderIds")
     private String[] amazonOrderIds;
@@ -64,7 +60,7 @@ public class OrdersDTO {
     private String actualFulfillmentSupplySourceId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("IsISPU")
-    private Boolean isISPU;
+    private String isISPU;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("StoreChainStoreId")
     private String storeChainStoreId;
