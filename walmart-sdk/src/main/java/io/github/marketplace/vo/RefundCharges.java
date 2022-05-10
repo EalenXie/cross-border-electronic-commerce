@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Created by EalenXie on 2022/5/10 12:45
+ * Created by EalenXie on 2022/5/10 12:44
  */
 @NoArgsConstructor
 @Data
-public class OrderLineStatuses {
-    @JsonProperty("orderLineStatus")
-    private List<OrderLineStatus> orderLineStatus;
+public class RefundCharges {
+    @JsonProperty("refundCharge")
+    private List<RefundCharge> refundCharge;
 }

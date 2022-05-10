@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-public class ChargeAmount {
-    @JsonProperty("currency")
-    private String currency;
-    @JsonProperty("amount")
-    private Double amount;
+public class RefundCharge {
+    @JsonProperty("refundReason")
+    private String refundReason;
+    @JsonProperty("charge")
+    private Charge charge;
 }

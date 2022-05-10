@@ -150,7 +150,7 @@ public class AmazonOrder {
     @JsonProperty("IsPrime")
     private Boolean isPrime;
     /**
-     *如果为真，则订单具有优先配送服务水平协议。有关优先配送订单的更多信息，请参阅适用于您的商城的卖家平台帮助中的“优先配送选项”。
+     * 如果为真，则订单具有优先配送服务水平协议。有关优先配送订单的更多信息，请参阅适用于您的商城的卖家平台帮助中的“优先配送选项”。
      */
     @JsonProperty("IsPremiumOrder")
     private Boolean isPremiumOrder;
@@ -213,62 +213,4 @@ public class AmazonOrder {
     @JsonProperty("AutomatedShippingSettings")
     private AutomatedShippingSettings automatedShippingSettings;
 
-
-
-
-    @NoArgsConstructor
-    @Data
-    public static class BuyerInfo {
-        @JsonProperty("BuyerEmail")
-        private String buyerEmail;
-        @JsonProperty("BuyerName")
-        private String buyerName;
-        @JsonProperty("BuyerCounty")
-        private String buyerCounty;
-        @JsonProperty("BuyerTaxInfo")
-        private BuyerTaxInfo buyerTaxInfo;
-        @JsonProperty("PurchaseOrderNumber")
-        private String purchaseOrderNumber;
-
-        @NoArgsConstructor
-        @Data
-        public static class BuyerTaxInfo {
-            @JsonProperty("CompanyLegalName")
-            private String companyLegalName;
-            @JsonProperty("TaxingRegion")
-            private String taxingRegion;
-            @JsonProperty("TaxClassifications")
-            private List<TaxClassification> taxClassifications;
-
-        }
-    }
-
-    @NoArgsConstructor
-    @Data
-    public static class AutomatedShippingSettings {
-        @JsonProperty("HasAutomatedShippingSettings")
-        private Boolean hasAutomatedShippingSettings;
-        @JsonProperty("AutomatedCarrier")
-        private String automatedCarrier;
-        @JsonProperty("AutomatedShipMethod")
-        private String automatedShipMethod;
-    }
-
-    @NoArgsConstructor
-    @Data
-    public static class PaymentExecutionDetail {
-        @JsonProperty("Payment")
-        private Payment payment;
-        @JsonProperty("PaymentMethod")
-        private String paymentMethod;
-
-        @NoArgsConstructor
-        @Data
-        public static class Payment {
-            @JsonProperty("CurrencyCode")
-            private String currencyCode;
-            @JsonProperty("Amount")
-            private String amount;
-        }
-    }
 }

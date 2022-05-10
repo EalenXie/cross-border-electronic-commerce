@@ -1,6 +1,7 @@
 package io.github.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.vo.PhoneNumber;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,13 +33,4 @@ public class ModifyAddressDTO {
     private PhoneNumber phoneNumber;
     @JsonProperty("region")
     private String region;
-
-    @NoArgsConstructor
-    @Data
-    public static class PhoneNumber {
-        @JsonProperty("number")
-        private String number;
-        @JsonProperty("country_code")
-        private String countryCode;
-    }
 }

@@ -5,18 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Created by EalenXie on 2022/3/24 15:12
+ * Created by EalenXie on 2022/5/10 12:45
  */
 @NoArgsConstructor
 @Data
 public class OrderLineStatus {
     @JsonProperty("status")
     private String status;
+    @JsonProperty("cancellationReason")
+    private String cancellationReason;
     @JsonProperty("statusQuantity")
-    private OrderLineQuantity statusQuantity;
-    @JsonProperty("trackingInfo")
-    private TrackingInfo trackingInfo;
-    @JsonProperty("returnCenterAddress")
-    private ReturnCenterAddress returnCenterAddress;
-
+    private StatusQuantity statusQuantity;
 }
