@@ -15,6 +15,7 @@
         <module>walmart-sdk</module>
         <module>paypal-sdk</module>
         <module>pingpong-sdk</module>
+        <module>shopify-sdk</module>
     </modules>
 
     <properties>

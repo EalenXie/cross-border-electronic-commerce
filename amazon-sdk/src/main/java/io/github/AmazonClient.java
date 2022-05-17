@@ -1,5 +1,6 @@
 package io.github;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.dto.OrdersDTO;
 import io.github.dto.ShipmentDTO;
@@ -128,7 +129,8 @@ public class AmazonClient {
      * https://developer-docs.amazon.com/sp-api/docs/orders-api-v0-reference#get-ordersv0orders
      */
     public AmazonResponse<AmazonOrder> getOrders(OrdersDTO dto) {
-        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        Map<String, String> args = mapper.convertValue(dto, new TypeReference<Map<String, String>>() {
+        });
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/orders/v0/orders", SELLING_PARTNER_HOST));
         LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
         req.setAll(args);

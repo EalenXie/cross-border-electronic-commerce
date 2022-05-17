@@ -1,6 +1,7 @@
 package io.github;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.dto.*;
 import io.github.vo.*;
@@ -50,7 +51,8 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public CheckoutForms userOrders(OrdersDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        Map<String, String> args = mapper.convertValue(dto, new TypeReference<Map<String, String>>() {
+        });
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/order/checkout-forms", isSandBox() ? API_SANDBOX_HOST : API_HOST));
         LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
         req.setAll(args);
@@ -115,7 +117,8 @@ public class AllegroOrderClient extends AllegroClient {
      */
     public OrderEvent events(OrderEventDTO dto, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
-        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        Map<String, String> args = mapper.convertValue(dto, new TypeReference<Map<String, String>>() {
+        });
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/order/events", isSandBox() ? API_SANDBOX_HOST : API_HOST));
         LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
         req.setAll(args);

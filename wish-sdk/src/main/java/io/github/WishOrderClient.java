@@ -1,5 +1,6 @@
 package io.github;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.dto.*;
 import io.github.vo.NameVO;
@@ -70,7 +71,8 @@ public class WishOrderClient extends WishClient {
     }
 
     public LinkedMultiValueMap<String, String> queryParam(Object dto) {
-        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        Map<String, String> args = mapper.convertValue(dto, new TypeReference<Map<String, String>>() {
+        });
         LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
         req.setAll(args);
         return req;

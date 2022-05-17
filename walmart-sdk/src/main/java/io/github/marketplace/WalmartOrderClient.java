@@ -1,5 +1,6 @@
 package io.github.marketplace;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.marketplace.dto.CancelDTO;
 import io.github.marketplace.dto.OrdersDTO;
@@ -45,7 +46,8 @@ public class WalmartOrderClient extends WalmartClient {
     public WalmartOrders orders(String accessToken, OrdersDTO dto) {
         HttpHeaders headers = getCommonHeaders();
         headers.set(WM_SEC_ACCESS_TOKEN, accessToken);
-        @SuppressWarnings("unchecked") Map<String, String> args = mapper.convertValue(dto, Map.class);
+        Map<String, String> args = mapper.convertValue(dto, new TypeReference<Map<String, String>>() {
+        });
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/v3/orders", isSandBoxMode() ? SANDBOX_HOST : HOST));
         LinkedMultiValueMap<String, String> req = new LinkedMultiValueMap<>();
         req.setAll(args);

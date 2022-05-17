@@ -1,7 +1,7 @@
 package io.github;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.github.dto.BalancesDTO;
 import io.github.dto.TransactionsDTO;
 import io.github.vo.*;
@@ -21,7 +21,6 @@ import java.util.SortedMap;
  * https://developer.paypal.com/
  */
 @Slf4j
-@SuppressWarnings("all")
 public class PayPalClient {
 
     private final RestOperations restOperations;
@@ -75,11 +74,10 @@ public class PayPalClient {
      * 客户端模式获取访问令牌
      * https://developer.paypal.com/api/rest/authentication/
      *
-     * @param accessToken 访问令牌
-     * @param accountId   账号id
-     * @param dto         请求参数
+     * @param clientId     客户ID
+     * @param clientSecret 密钥
      */
-    public PayPalAccessToken clientCredentialsAcessToken(String clientId, String clientSecret) {
+    public PayPalAccessToken clientCredentialsAccessToken(String clientId, String clientSecret) {
         HttpHeaders headers = getBasicHeader(clientId, clientSecret);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Accept-Language", "en_US");
@@ -92,12 +90,7 @@ public class PayPalClient {
 
     /**
      * 显示付款项目的详细信息
-     * <p>
-     * <p>
      * https://developer.paypal.com/docs/api/referenced-payouts/v1/#referenced-payouts_get_batch_details
-     *
-     * @param payoutsItemId
-     * @return
      */
     public ReferencedPayoutsItems clientReferencedPayoutsItems(String payoutsItemId, String token) {
         HttpHeaders headers = new HttpHeaders();
@@ -111,12 +104,7 @@ public class PayPalClient {
 
     /**
      * 显示付款项目的详细信息
-     * <p>
-     * <p>
      * https://developer.paypal.com/docs/api/referenced-payouts/v1/#referenced-payouts_get_batch_details
-     *
-     * @param payoutsItemId
-     * @return
      */
     public UserInfo getUserInfo(String token) {
         HttpHeaders headers = new HttpHeaders();
@@ -133,7 +121,6 @@ public class PayPalClient {
      *
      * @param token 访问令牌
      * @param dto   请求参数封装的对象TransactionsDTO
-     * @return
      */
     public TransactionDetailsVO transactions(String token, TransactionsDTO dto) {
         HttpHeaders headers = new HttpHeaders();
@@ -142,12 +129,7 @@ public class PayPalClient {
         //访问路径
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/reporting/transactions", sandBox ? HOST_SANDBOX : HOST));
         //将请求参数按指定排序生成url参数
-        @SuppressWarnings("unchecked") SortedMap<String, String> sortedMap = mapper.convertValue(dto, SortedMap.class);
-        LinkedMultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        if (!sortedMap.isEmpty()) {
-            queryParams.setAll(sortedMap);
-            builder.queryParams(queryParams);
-        }
+        setQueryParams(builder, dto);
         return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), TransactionDetailsVO.class).getBody();
     }
 
@@ -157,7 +139,6 @@ public class PayPalClient {
      *
      * @param token 访问令牌
      * @param dto   请求参数对象
-     * @return
      */
     public BalancesVO balances(String token, BalancesDTO dto) {
         HttpHeaders headers = new HttpHeaders();
@@ -165,13 +146,19 @@ public class PayPalClient {
         headers.setBearerAuth(token);
         //访问路径
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/reporting/balances", sandBox ? HOST_SANDBOX : HOST));
-        @SuppressWarnings("unchecked") SortedMap<String, String> sortedMap = mapper.convertValue(dto, SortedMap.class);
+        setQueryParams(builder, dto);
+        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), BalancesVO.class).getBody();
+    }
+
+
+    private void setQueryParams(UriComponentsBuilder builder, Object dto) {
+        SortedMap<String, String> sortedMap = mapper.convertValue(dto, new TypeReference<SortedMap<String, String>>() {
+        });
         LinkedMultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         if (!sortedMap.isEmpty()) {
             queryParams.setAll(sortedMap);
             builder.queryParams(queryParams);
         }
-        return restOperations.exchange(builder.build().toUri(), HttpMethod.GET, new HttpEntity<>(null, headers), BalancesVO.class).getBody();
     }
 
 
@@ -179,10 +166,6 @@ public class PayPalClient {
      * 列出参考批次付款中的项目
      * <p>
      * https://developer.paypal.com/docs/api/referenced-payouts/v1/#referenced-payouts_get_batch_details
-     *
-     * @param payoutsBatchId
-     * @param token
-     * @return
      */
     public ResponseEntity<?> clientReferencedPayouts(String payoutsBatchId, String token) {
         HttpHeaders headers = new HttpHeaders();
