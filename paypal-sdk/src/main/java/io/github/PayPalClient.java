@@ -92,6 +92,7 @@ public class PayPalClient {
      * 显示付款项目的详细信息
      * https://developer.paypal.com/docs/api/referenced-payouts/v1/#referenced-payouts_get_batch_details
      */
+    @SuppressWarnings("all")
     public ReferencedPayoutsItems clientReferencedPayoutsItems(String payoutsItemId, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

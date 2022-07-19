@@ -16,6 +16,7 @@
         <module>paypal-sdk</module>
         <module>pingpong-sdk</module>
         <module>shopify-sdk</module>
+        <module>ebay-sdk</module>
     </modules>
 
     <properties>

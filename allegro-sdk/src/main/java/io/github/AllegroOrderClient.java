@@ -103,7 +103,6 @@ public class AllegroOrderClient extends AllegroClient {
     public Shipment shipments(String orderId, String accessToken) {
         HttpHeaders headers = getBearerHeaders(accessToken);
         ResponseEntity<Shipment> exchange = getRestOperations().exchange(String.format("%s/order/checkout-forms/%s/shipments", isSandBox() ? API_SANDBOX_HOST : API_HOST, orderId), HttpMethod.GET, new HttpEntity<>(null, headers), Shipment.class);
-
         return exchange.getBody();
     }
 

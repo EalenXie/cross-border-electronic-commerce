@@ -119,8 +119,10 @@ public class AmazonClient {
      *
      * @param orderId 亚马逊订单ID
      */
-    public AmazonResponse<AmazonOrder> getOrder(String orderId, String nextToken) {
-        return restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s?nextToken=%s", SELLING_PARTNER_HOST, orderId, nextToken)), HttpMethod.GET, new HttpEntity<>(null, new HttpHeaders()), new ParameterizedTypeReference<AmazonResponse<AmazonOrder>>() {
+    public AmazonResponse<AmazonOrder> getOrder(String orderId, String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("x-amz-access-token", accessToken);
+        return restOperations.exchange(URI.create(String.format("%s/orders/v0/orders/%s?MarketplaceId=ATVPDKIKX0DER", SELLING_PARTNER_HOST, orderId)), HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<AmazonResponse<AmazonOrder>>() {
         }).getBody();
     }
 
